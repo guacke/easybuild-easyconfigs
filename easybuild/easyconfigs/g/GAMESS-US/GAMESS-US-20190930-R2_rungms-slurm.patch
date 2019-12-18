@@ -1,3 +1,15 @@
+diff -Nru gamess.orig/lked gamess/lked
+--- gamess.orig/lked	2019-12-13 19:12:25.912544000 +0100
++++ gamess/lked	2019-12-18 12:21:52.174472774 +0100
+@@ -1707,7 +1707,7 @@
+ #   Hence it has been printed out piecemeal, but in order, just above.
+ #
+ set EXTRA_LINK_FLAGS="-L$GMS_PATH/libcchem/boost/lib"
+-#set LIBRARIES="$LIBRARIES -fopenmp"
++set LIBRARIES="$LIBRARIES -fopenmp"
+ echo "Linker messages (if any) follow..."
+ echo "$LAPACK"
+ if (($TARGET == win32) || ($TARGET == win64) || ($TARGET == winazure)) then
 diff -Nru gamess.orig/rungms gamess/rungms
 --- gamess.orig/rungms	2019-12-13 19:12:07.437900000 +0100
 +++ gamess/rungms	2019-12-17 09:36:18.216778698 +0100

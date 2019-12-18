@@ -24,7 +24,7 @@ toolchainopts = {'usempi': True, 'openmp': True}
 sources = ['gamess-%(version)s.tar.gz']
 checksums = [
     '2e12f71210249d379f196ba6a3b479f9fb962de82ae2f1130af9022aba44ddea',  # gamess-20190930-R2.tar.gz
-    '9573adaff54aac14c1fd14bc287b91e95b9d67be3f13b2d2aa6f39ab93d0a5d1',  # GAMESS-US_20190930-R2_rungms-slurm.patch
+    '182f30d6fa5f430e3b9c1bbe59197fa03166d80849a212add3cc03ddcbbb4925',  # GAMESS-US-20190930-R2_rungms-slurm.patch
 ]
 
 patches = [
