@@ -1,0 +1,63 @@
+diff -Nru gamess.orig/rungms gamess/rungms
+--- gamess.orig/rungms	2019-12-13 19:12:07.437900000 +0100
++++ gamess/rungms	2019-12-17 09:36:18.216778698 +0100
+@@ -88,6 +88,7 @@
+                       set SCHED=none
+ if ($?PBS_O_LOGNAME)  set SCHED=PBS
+ if ($?SGE_O_LOGNAME)  set SCHED=SGE
++if ($?SLURM_JOB_ID)   set SCHED=SLURM
+ if ($SCHED == SGE) then
+    set SCR=$TMPDIR
+    echo "SGE has assigned the following compute nodes to this run:"
+@@ -103,6 +104,13 @@
+    echo "PBS has assigned the following compute nodes to this run:"
+    uniq $PBS_NODEFILE
+ endif
++if ($SCHED == SLURM) then
++   # SCR is for large binary temporary files. Accordingly, it should only be
++   # set to a network file system if the connection to that file system is fast.
++   set SCR=$SCRATCH_DIR
++   echo "SLURM has assigned the following compute nodes to this run:"
++   scontrol show hostnames $SLURM_JOB_NODELIST | sort | uniq
++endif
+ #
+ echo "Available scratch disk space (Kbyte units) at beginning of the job is"
+ df -k $SCR
+@@ -670,6 +678,11 @@
+          set NNODES=`wc -l $HOSTFILE`
+          set NNODES=$NNODES[1]
+       endif
++      if ($SCHED == SLURM) then
+++         scontrol show hostnames $SLURM_JOB_NODELIST | sort | uniq > $HOSTFILE
+++         set NNODES=`wc -l $HOSTFILE`
+++         set NNODES=$NNODES[1]
+++      endif
+    endif
+    #           uncomment next lines if you need to debug host configuration.
+    #--echo '-----debug----'
+@@ -944,8 +957,12 @@
+          unset echo
+       endif
+       set echo
+-      mpiexec.hydra -f $PROCFILE -n $NPROCS \
++      if ($SCHED == SLURM) then
++         srun $GMSPATH/gamess.$VERNO.x < /dev/null
++      else
++         mpiexec.hydra -f $PROCFILE -n $NPROCS \
+             $GMSPATH/gamess.$VERNO.x < /dev/null
++      endif
+       unset echo
+       breaksw
+ 
+@@ -1042,6 +1059,11 @@
+          set NNODES=`wc -l $HOSTFILE`
+          set NNODES=$NNODES[1]
+       endif
++      if ($SCHED == SLURM) then
++         scontrol show hostnames $SLURM_JOB_NODELIST | sort | uniq > $HOSTFILE
++         set NNODES=`wc -l $HOSTFILE`
++         set NNODES=$NNODES[1]
++      endif
+    endif
+    #           uncomment next lines if you need to debug host configuration.
+    #--echo '-----debug----'
